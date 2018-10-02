@@ -1,0 +1,22 @@
+notests *default:
+  build:
+    target: Vostok.Configuration.Sources.Xml.sln
+    configuration: NoTests
+    tool:
+      name: dotnet
+
+  install:
+    - Vostok.Configuration.Sources.Xml/bin/Release/netstandard2.0/Vostok.Configuration.Sources.Xml.dll
+
+  deps:
+    - vostok.devtools
+    - vostok.configuration.abstractions
+    - vostok.configuration.sources
+
+full-build > notests:
+  deps:
+    - vostok.commons.testing/src
+    
+  build:
+    target: Vostok.Configuration.Sources.Xml.sln
+    configuration: Release
