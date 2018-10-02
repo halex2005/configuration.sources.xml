@@ -5,10 +5,9 @@ using FluentAssertions;
 using FluentAssertions.Extensions;
 using NUnit.Framework;
 using Vostok.Commons.Testing;
-using Vostok.Configuration.Sources.Tests.Helper;
-using Vostok.Configuration.Sources.Xml;
+using Vostok.Configuration.Sources.Tests.Commons;
 
-namespace Vostok.Configuration.Sources.Tests
+namespace Vostok.Configuration.Sources.Xml.Tests
 {
     [TestFixture]
     public class XmlFileSource_Tests : Sources_Test
