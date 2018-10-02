@@ -32,7 +32,7 @@
     <Reference Include="Vostok.Configuration.Sources">
       <HintPath>..\..\vostok.configuration.sources\Vostok.Configuration.Sources\bin\Release\netstandard2.0\Vostok.Configuration.Sources.dll</HintPath>
     </Reference>
-    <Reference Include="Vostok.Configuration.Sources.Tests">
+    <Reference Include="Vostok.Configuration.Sources.Tests.Commons">
       <HintPath>..\..\vostok.configuration.sources\Vostok.Configuration.Sources.Tests.Commons\bin\Release\netstandard2.0\Vostok.Configuration.Sources.Tests.Commons.dll</HintPath>
     </Reference>
   </ItemGroup>
