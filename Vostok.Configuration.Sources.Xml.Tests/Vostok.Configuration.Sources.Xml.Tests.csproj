@@ -33,7 +33,7 @@
       <HintPath>..\..\vostok.configuration.sources\Vostok.Configuration.Sources\bin\Release\netstandard2.0\Vostok.Configuration.Sources.dll</HintPath>
     </Reference>
     <Reference Include="Vostok.Configuration.Sources.Tests">
-      <HintPath>..\..\vostok.configuration.sources\Vostok.Configuration.Sources.Tests\bin\Release\netcoreapp2.1\Vostok.Configuration.Sources.Tests.dll</HintPath>
+      <HintPath>..\..\vostok.configuration.sources\Vostok.Configuration.Sources.Tests\bin\Release\netstandard2.0\Vostok.Configuration.Sources.Tests.dll</HintPath>
     </Reference>
   </ItemGroup>
 
