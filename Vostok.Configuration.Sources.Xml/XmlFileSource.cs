@@ -1,6 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 using Vostok.Configuration.Abstractions.SettingsTree;
+using Vostok.Configuration.Sources.Implementations.File;
 
 namespace Vostok.Configuration.Sources.Xml
 {
@@ -21,11 +22,11 @@ namespace Vostok.Configuration.Sources.Xml
         {
         }
 
-        internal XmlFileSource([NotNull] string filePath, Func<string, FileSourceSettings, IObservable<string>> fileWatcherCreator, FileSourceSettings settings = null)
+        internal XmlFileSource([NotNull] string filePath, Func<string, FileSourceSettings, IObservable<(string, Exception)>> fileWatcherCreator, FileSourceSettings settings = null)
             : base(filePath, settings, ParseSettings, fileWatcherCreator)
         {
         }
 
-        private static (ISettingsNode settings, Exception error) ParseSettings(string str) => (new XmlStringSource(str).Get(), null);
+        private static ISettingsNode ParseSettings(string str) => new XmlStringSource(str).Get();
     }
 }

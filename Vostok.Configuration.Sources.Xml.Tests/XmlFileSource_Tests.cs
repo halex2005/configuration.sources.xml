@@ -143,10 +143,18 @@ namespace Vostok.Configuration.Sources.Xml.Tests
             var sub = xfs.Observe().Subscribe(p =>
             {
                 val++;
-                p.settings["Param"].Value.Should().Be("set1");
+                switch (val)
+                {
+                    case 1:
+                        p.settings["Param"].Value.Should().Be("set1");
+                        break;
+                    case 2:
+                        p.settings["Param"].Value.Should().Be("set2");
+                        break;
+                }
             });
 
-            content = "<Param>set1</Param>";
+            content = "<Param>set2</Param>";
             //update file
             watcher.GetUpdate(content, true);
 
