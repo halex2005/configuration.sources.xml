@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Xml;
 using Vostok.Configuration.Abstractions.SettingsTree;
-using Vostok.Configuration.Sources.SettingsTree.Mutable;
 
 namespace Vostok.Configuration.Sources.Xml
 {
@@ -28,16 +27,18 @@ namespace Vostok.Configuration.Sources.Xml
             var root = doc.DocumentElement;
             if (root == null) return null;
 
-            var res = new UniversalNode(null as string, "root");
-            res.Add(root.Name, ParseElement(root, root.Name));
+            var rootNode = ParseElement(root.Name, root);
 
-            return res.ChildrenDict.Any() ? (ObjectNode) res : null;
+            return new ObjectNode("root", new Dictionary<string, ISettingsNode>
+            {
+                [rootNode.Name] = rootNode
+            });
         }
 
-        private UniversalNode ParseElement(XmlElement element, string name)
+        private ISettingsNode ParseElement(string name, XmlElement element)
         {
             if (!element.HasChildNodes && !element.HasAttributes)
-                return new UniversalNode(element.InnerText, name);
+                return new ValueNode(name, element.InnerText);
 
             var nodeList = new List<XmlNode>(element.ChildNodes.Count);
             foreach (XmlNode node in element.ChildNodes)
@@ -51,26 +52,16 @@ namespace Vostok.Configuration.Sources.Xml
                 }
 
             if (!nodeList.OfType<XmlElement>().Any())
-                return new UniversalNode(element.InnerText, name);
+                return new ValueNode(name, element.InnerText);
 
             var lookup = nodeList.Cast<XmlElement>().ToLookup(l => l.Name);
-            var res = new UniversalNode(null as string, name);
-            foreach (var elements in lookup)
-            {
-                var elem = elements.First();
-                if (elements.Count() == 1)
-                    res.Add(elem.Name, ParseElement(elem, elem.Name));
-                else
-                {
-                    var array = new UniversalNode(null as string, elem.Name);
-                    res.Add(elem.Name, array);
-                    var i = 0;
-                    foreach (var node in elements)
-                        array.Add(ParseElement(node, i++.ToString()));
-                }
-            }
-
-            return res;
+            
+            return new ObjectNode(name, lookup.ToDictionary(elements => elements.Key,
+                elements =>
+                    elements.Count() == 1
+                    ? ParseElement(elements.Key, elements.First())
+                    : new ArrayNode(elements.Key, elements.Select((node, index) => ParseElement(index.ToString(), node)).ToList())
+                ));
         }
 
         public IObservable<(ISettingsNode settings, Exception error)> ObserveRaw()
