@@ -1,5 +1,6 @@
 using System;
 using Vostok.Configuration.Abstractions.SettingsTree;
+using Vostok.Configuration.Sources.Constant;
 
 namespace Vostok.Configuration.Sources.Xml
 {
@@ -7,7 +8,7 @@ namespace Vostok.Configuration.Sources.Xml
     /// <summary>
     /// Xml converter to <see cref="ISettingsNode"/> tree from string
     /// </summary>
-    public class XmlStringSource : ConfigurationSourceAdapter
+    public class XmlStringSource : BaseConstantSource
     {
         /// <summary>
         /// <para>Creates a <see cref="XmlStringSource"/> instance using given string in <paramref name="xml"/> parameter</para>
@@ -16,7 +17,7 @@ namespace Vostok.Configuration.Sources.Xml
         /// <param name="xml">xml data in string</param>
         /// <exception cref="Exception">Xml has wrong format</exception>
         public XmlStringSource(string xml)
-            : base(new XmlStringRawSource(xml))
+            : base(() => new XmlConfigurationConverter().Convert(xml))
         {
         }
     }

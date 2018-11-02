@@ -7,23 +7,16 @@ using Vostok.Configuration.Abstractions.SettingsTree;
 
 namespace Vostok.Configuration.Sources.Xml
 {
-    internal class XmlStringRawSource : IRawConfigurationSource
+    internal class XmlConfigurationConverter : IConfigurationConverter<string>
     {
-        private readonly string xml;
-        private volatile bool neverParsed;
-        private (ISettingsNode settings, Exception error) currentSettings;
         private XmlDocument doc;
 
-        public XmlStringRawSource(string xml)
+        public ISettingsNode Convert(string configuration)
         {
-            this.xml = xml;
-            neverParsed = true;
-        }
-
-        private ISettingsNode ParseXml()
-        {
+            if (string.IsNullOrWhiteSpace(configuration))
+                return null;
             doc = new XmlDocument();
-            doc.LoadXml(xml);
+            doc.LoadXml(configuration);
             var root = doc.DocumentElement;
             if (root == null) return null;
 
@@ -62,24 +55,6 @@ namespace Vostok.Configuration.Sources.Xml
                     ? ParseElement(elements.Key, elements.First())
                     : new ArrayNode(elements.Key, elements.Select((node, index) => ParseElement(index.ToString(), node)).ToList())
                 ));
-        }
-
-        public IObservable<(ISettingsNode settings, Exception error)> ObserveRaw()
-        {
-            if (neverParsed)
-            {
-                neverParsed = false;
-                try
-                {
-                    currentSettings = string.IsNullOrWhiteSpace(xml) ? (null, null) : (ParseXml(), null as Exception);
-                }
-                catch (Exception e)
-                {
-                    currentSettings = (null, e);
-                }
-            }
-
-            return Observable.Return(currentSettings);
         }
     }
 }

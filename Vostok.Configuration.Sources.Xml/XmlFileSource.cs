@@ -1,7 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 using Vostok.Configuration.Abstractions.SettingsTree;
-using Vostok.Configuration.Sources.Implementations.File;
+using Vostok.Configuration.Sources.File;
 
 namespace Vostok.Configuration.Sources.Xml
 {
