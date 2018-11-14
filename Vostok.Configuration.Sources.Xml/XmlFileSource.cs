@@ -22,11 +22,6 @@ namespace Vostok.Configuration.Sources.Xml
         {
         }
 
-        internal XmlFileSource([NotNull] string filePath, Func<string, FileSourceSettings, IObservable<(string, Exception)>> fileWatcherCreator, FileSourceSettings settings = null)
-            : base(filePath, settings, ParseSettings, fileWatcherCreator)
-        {
-        }
-
-        private static ISettingsNode ParseSettings(string str) => new XmlStringSource(str).Get();
+        private static ISettingsNode ParseSettings(string str) => new XmlConfigurationConverter().Convert(str);
     }
 }
