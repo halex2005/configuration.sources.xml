@@ -22,10 +22,7 @@ namespace Vostok.Configuration.Sources.Xml
 
             var rootNode = ParseElement(root.Name, root);
 
-            return new ObjectNode("root", new Dictionary<string, ISettingsNode>
-            {
-                [rootNode.Name] = rootNode
-            });
+            return new ObjectNode("root", new List<ISettingsNode> {rootNode});
         }
 
         private ISettingsNode ParseElement(string name, XmlElement element)
@@ -48,13 +45,16 @@ namespace Vostok.Configuration.Sources.Xml
                 return new ValueNode(name, element.InnerText);
 
             var lookup = nodeList.Cast<XmlElement>().ToLookup(l => l.Name);
+
+            var children = lookup.Select(
+                    elements =>
+                        elements.Count() == 1
+                            ? ParseElement(elements.Key, elements.First())
+                            : new ArrayNode(elements.Key, elements.Select((node, index) => ParseElement(index.ToString(), node)).ToList())
+                )
+                .ToList();
             
-            return new ObjectNode(name, lookup.ToDictionary(elements => elements.Key,
-                elements =>
-                    elements.Count() == 1
-                    ? ParseElement(elements.Key, elements.First())
-                    : new ArrayNode(elements.Key, elements.Select((node, index) => ParseElement(index.ToString(), node)).ToList())
-                ));
+            return new ObjectNode(name, children);
         }
     }
 }

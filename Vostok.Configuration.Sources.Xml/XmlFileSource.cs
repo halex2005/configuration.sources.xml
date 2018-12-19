@@ -9,7 +9,7 @@ namespace Vostok.Configuration.Sources.Xml
     /// <summary>
     /// Xml converter to <see cref="ISettingsNode"/> tree from file
     /// </summary>
-    public class XmlFileSource : SingletonConfigurationSource
+    public class XmlFileSource : BaseFileSource
     {
         /// <inheritdoc />
         /// <summary>
@@ -17,8 +17,13 @@ namespace Vostok.Configuration.Sources.Xml
         /// </summary>
         /// <param name="filePath">File name with settings</param>
         /// <param name="settings">File parsing settings</param>
-        public XmlFileSource([NotNull] string filePath, FileSourceSettings settings = null)
-            : base((filePath, settings), () => new BaseFileSource(filePath, settings, ParseSettings))
+        public XmlFileSource([NotNull] string filePath)
+            : this(new FileSourceSettings{FilePath = filePath})
+        {
+        }
+        
+        public XmlFileSource(FileSourceSettings settings)
+            : base(settings, ParseSettings)
         {
         }
 
