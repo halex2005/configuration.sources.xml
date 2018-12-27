@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace Vostok.Configuration.Sources.Xml.Tests
 {
     [TestFixture]
-    public class XmlConfigurationConverter_Tests
+    public class XmlConfigurationParser_Tests
     {
         [TestCase(null, TestName = "when string is null")]
         [TestCase(" ", TestName = "when string is whitespace")]
