@@ -18,15 +18,13 @@ namespace Vostok.Configuration.Sources.Xml
         /// <param name="filePath">File name with settings</param>
         /// <param name="settings">File parsing settings</param>
         public XmlFileSource([NotNull] string filePath)
-            : this(new FileSourceSettings{FilePath = filePath})
+            : this(new FileSourceSettings(filePath))
         {
         }
         
         public XmlFileSource(FileSourceSettings settings)
-            : base(settings, ParseSettings)
+            : base(settings, XmlConfigurationParser.Parse)
         {
         }
-
-        private static ISettingsNode ParseSettings(string str) => new XmlConfigurationConverter().Convert(str);
     }
 }

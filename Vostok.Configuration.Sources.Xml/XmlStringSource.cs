@@ -17,7 +17,7 @@ namespace Vostok.Configuration.Sources.Xml
         /// <param name="xml">xml data in string</param>
         /// <exception cref="Exception">Xml has wrong format</exception>
         public XmlStringSource(string xml)
-            : base(() => new XmlConfigurationConverter().Convert(xml))
+            : base(() => XmlConfigurationParser.Parse(xml))
         {
         }
     }

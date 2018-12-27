@@ -1,31 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Xml;
 using Vostok.Configuration.Abstractions.SettingsTree;
 
 namespace Vostok.Configuration.Sources.Xml
 {
-    internal class XmlConfigurationConverter : IConfigurationConverter<string>
+    internal static class XmlConfigurationParser
     {
-        private XmlDocument doc;
-
-        public ISettingsNode Convert(string configuration)
+        public static ISettingsNode Parse(string configuration)
         {
             if (string.IsNullOrWhiteSpace(configuration))
                 return null;
-            doc = new XmlDocument();
+            var doc = new XmlDocument();
             doc.LoadXml(configuration);
             var root = doc.DocumentElement;
             if (root == null) return null;
 
-            var rootNode = ParseElement(root.Name, root);
+            var rootNode = ParseElement(doc, root.Name, root);
 
-            return new ObjectNode("root", new List<ISettingsNode> {rootNode});
+            return new ObjectNode(new List<ISettingsNode> {rootNode});
         }
 
-        private ISettingsNode ParseElement(string name, XmlElement element)
+        private static ISettingsNode ParseElement(XmlDocument doc, string name, XmlElement element)
         {
             if (!element.HasChildNodes && !element.HasAttributes)
                 return new ValueNode(name, element.InnerText);
@@ -49,8 +45,8 @@ namespace Vostok.Configuration.Sources.Xml
             var children = lookup.Select(
                     elements =>
                         elements.Count() == 1
-                            ? ParseElement(elements.Key, elements.First())
-                            : new ArrayNode(elements.Key, elements.Select((node, index) => ParseElement(index.ToString(), node)).ToList())
+                            ? ParseElement(doc, elements.Key, elements.First())
+                            : new ArrayNode(elements.Key, elements.Select((node, index) => ParseElement(doc, index.ToString(), node)).ToList())
                 )
                 .ToList();
             
