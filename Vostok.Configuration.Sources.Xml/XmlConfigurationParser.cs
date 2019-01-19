@@ -13,14 +13,16 @@ namespace Vostok.Configuration.Sources.Xml
         {
             if (string.IsNullOrWhiteSpace(content))
                 return null;
+
             var doc = new XmlDocument();
+
             doc.LoadXml(content);
+
             var root = doc.DocumentElement;
-            if (root == null) return null;
+            if (root == null)
+                return null;
 
-            var rootNode = ParseElement(doc, root.Name, root);
-
-            return new ObjectNode(new List<ISettingsNode> {rootNode});
+            return new ObjectNode(new List<ISettingsNode> { ParseElement(doc, root.Name, root) });
         }
 
         private static ISettingsNode ParseElement(XmlDocument doc, string name, XmlElement element)
@@ -28,27 +30,32 @@ namespace Vostok.Configuration.Sources.Xml
             if (!element.HasChildNodes && !element.HasAttributes)
                 return new ValueNode(name, element.InnerText);
 
-            var nodeList = new List<XmlNode>(element.ChildNodes.Count);
+            var childNodes = new List<XmlNode>(element.ChildNodes.Count);
+
             foreach (XmlNode node in element.ChildNodes)
-                nodeList.Add(node);
+                childNodes.Add(node);
+
             foreach (XmlAttribute attribute in element.Attributes)
-                if (nodeList.All(n => n.Name != attribute.Name))
+                if (childNodes.All(n => n.Name != attribute.Name))
                 {
                     var elem = doc.CreateElement(attribute.Name);
                     elem.InnerText = attribute.Value;
-                    nodeList.Add(elem);
+                    childNodes.Add(elem);
                 }
 
-            if (!nodeList.OfType<XmlElement>().Any())
+            if (!childNodes.OfType<XmlElement>().Any())
                 return new ValueNode(name, element.InnerText);
 
-            var lookup = nodeList.Cast<XmlElement>().ToLookup(l => l.Name);
 
-            var children = lookup.Select(
-                    elements =>
-                        elements.Count() == 1
-                            ? ParseElement(doc, elements.Key, elements.First())
-                            : new ArrayNode(elements.Key, elements.Select((node, index) => ParseElement(doc, index.ToString(), node)).ToList())
+            var children =
+                childNodes
+                    .Cast<XmlElement>()
+                    .GroupBy(l => l.Name)
+                    .Select(
+                        elements =>
+                            elements.Count() == 1
+                                ? ParseElement(doc, elements.Key, elements.First())
+                                : new ArrayNode(elements.Key, elements.Select((node, index) => ParseElement(doc, index.ToString(), node)).ToList())
                 )
                 .ToList();
             
