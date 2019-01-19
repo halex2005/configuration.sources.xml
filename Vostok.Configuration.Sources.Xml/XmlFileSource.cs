@@ -9,7 +9,7 @@ namespace Vostok.Configuration.Sources.Xml
     /// <summary>
     /// Xml converter to <see cref="ISettingsNode"/> tree from file
     /// </summary>
-    public class XmlFileSource : BaseFileSource
+    public class XmlFileSource : FileSource
     {
         /// <inheritdoc />
         /// <summary>

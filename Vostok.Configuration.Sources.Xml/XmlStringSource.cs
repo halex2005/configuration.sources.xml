@@ -8,7 +8,7 @@ namespace Vostok.Configuration.Sources.Xml
     /// <summary>
     /// Xml converter to <see cref="ISettingsNode"/> tree from string
     /// </summary>
-    public class XmlStringSource : BaseConstantSource
+    public class XmlStringSource : LazyConstantSource
     {
         /// <summary>
         /// <para>Creates a <see cref="XmlStringSource"/> instance using given string in <paramref name="xml"/> parameter</para>
