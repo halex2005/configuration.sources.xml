@@ -1,18 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using JetBrains.Annotations;
 using Vostok.Configuration.Abstractions.SettingsTree;
 
 namespace Vostok.Configuration.Sources.Xml
 {
-    internal static class XmlConfigurationParser
+    [PublicAPI]
+    public static class XmlConfigurationParser
     {
-        public static ISettingsNode Parse(string configuration)
+        public static ISettingsNode Parse(string content)
         {
-            if (string.IsNullOrWhiteSpace(configuration))
+            if (string.IsNullOrWhiteSpace(content))
                 return null;
             var doc = new XmlDocument();
-            doc.LoadXml(configuration);
+            doc.LoadXml(content);
             var root = doc.DocumentElement;
             if (root == null) return null;
 
