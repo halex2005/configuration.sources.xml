@@ -17,5 +17,18 @@ namespace Vostok.Configuration.Sources.Xml.Tests.Functional
                 .Should()
                 .BeEquivalentTo((TestCase.SettingsTree, null as Exception));
         }
+
+        [Test]
+        public void Should_propagate_changes_to_observers_on_external_push()
+        {
+            var source = new XmlStringSource("<key></key>");
+
+            source.Push(TestCase.Xml);
+
+            source.Observe()
+                .WaitFirstValue(100.Milliseconds())
+                .Should()
+                .BeEquivalentTo((TestCase.SettingsTree, null as Exception));
+        }
     }
 }

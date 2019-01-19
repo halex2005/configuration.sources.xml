@@ -1,5 +1,5 @@
 using JetBrains.Annotations;
-using Vostok.Configuration.Sources.Constant;
+using Vostok.Configuration.Sources.Manual;
 
 namespace Vostok.Configuration.Sources.Xml
 {
@@ -7,11 +7,12 @@ namespace Vostok.Configuration.Sources.Xml
     /// A source that works by parsing in-memory XML strings.
     /// </summary>
     [PublicAPI]
-    public class XmlStringSource : LazyConstantSource
+    public class XmlStringSource : ManualFeedSource<string>
     {
         public XmlStringSource(string xml)
-            : base(() => XmlConfigurationParser.Parse(xml))
+            : base(XmlConfigurationParser.Parse)
         {
+            Push(xml);
         }
     }
 }
