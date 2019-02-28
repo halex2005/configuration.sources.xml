@@ -3,6 +3,7 @@ using System.Linq;
 using System.Xml;
 using FluentAssertions;
 using NUnit.Framework;
+using Vostok.Configuration.Abstractions.SettingsTree;
 
 // ReSharper disable PossibleNullReferenceException
 
@@ -23,7 +24,8 @@ namespace Vostok.Configuration.Sources.Xml.Tests
         public void Should_parse_single_value(string value)
         {
             var settings = XmlConfigurationParser.Parse($"<StringValue>{value}</StringValue>");
-            settings["StringValue"].Value.Should().Be(value);
+
+            settings.Should().BeOfType<ValueNode>().Which.Value.Should().Be(value);
         }
 
         [Test]
@@ -37,8 +39,9 @@ namespace Vostok.Configuration.Sources.Xml.Tests
             
             var settings = XmlConfigurationParser.Parse(value);
 
-            settings["Dictionary"]["Key1"].Value.Should().Be("value1");
-            settings["Dictionary"]["Key2"].Value.Should().Be("value2");
+            settings.Name.Should().Be("Dictionary");
+            settings["Key1"].Value.Should().Be("value1");
+            settings["Key2"].Value.Should().Be("value2");
         }
 
         [Test]
@@ -51,8 +54,9 @@ namespace Vostok.Configuration.Sources.Xml.Tests
 </ArrayParent>";
             
             var settings = XmlConfigurationParser.Parse(value);
-            
-            settings["ArrayParent"]["Array"].Children.Select(child => child.Value).Should().Equal("value1", "value2");
+
+            settings.Name.Should().Be("ArrayParent");
+            settings["Array"].Children.Select(child => child.Value).Should().Equal("value1", "value2");
         }
 
         [Test]
@@ -69,9 +73,11 @@ namespace Vostok.Configuration.Sources.Xml.Tests
 </object>";
 
             var settings = XmlConfigurationParser.Parse(value);
-            settings["object"]["item"].Children.Count().Should().Be(2);
-            settings["object"]["item"].Children.First()["subitem1"].Value.Should().Be("value1");
-            settings["object"]["item"].Children.Last()["subitem2"].Value.Should().Be("value2");
+
+            settings.Name.Should().Be("object");
+            settings["item"].Children.Count().Should().Be(2);
+            settings["item"].Children.First()["subitem1"].Value.Should().Be("value1");
+            settings["item"].Children.Last()["subitem2"].Value.Should().Be("value2");
         }
         
         [Test]
@@ -90,9 +96,11 @@ namespace Vostok.Configuration.Sources.Xml.Tests
 </object>";
 
             var settings = XmlConfigurationParser.Parse(value);
-            settings["object"]["item"].Children.Count().Should().Be(2);
-            settings["object"]["item"].Children.First()["subitem"].Children.Select(c => c.Value).Should().Equal("value1", "value2");
-            settings["object"]["item"].Children.Last()["subitem"].Children.Select(c => c.Value).Should().Equal("value3", "value4");
+
+            settings.Name.Should().Be("object");
+            settings["item"].Children.Count().Should().Be(2);
+            settings["item"].Children.First()["subitem"].Children.Select(c => c.Value).Should().Equal("value1", "value2");
+            settings["item"].Children.Last()["subitem"].Children.Select(c => c.Value).Should().Equal("value3", "value4");
         }
 
         [Test]
@@ -110,18 +118,20 @@ namespace Vostok.Configuration.Sources.Xml.Tests
             
             var settings = XmlConfigurationParser.Parse(value);
 
-            settings["Mixed"]["SingleItem"].Value.Should().Be("SingleValue");
-            settings["Mixed"]["DictItem"]["DictKey"].Value.Should().Be("DictValue");
-            settings["Mixed"]["ArrayItem"].Children.Select(child => child.Value).Should().Equal("ArrayValue1", "ArrayValue2");
+            settings.Name.Should().Be("Mixed");
+            settings["SingleItem"].Value.Should().Be("SingleValue");
+            settings["DictItem"]["DictKey"].Value.Should().Be("DictValue");
+            settings["ArrayItem"].Children.Select(child => child.Value).Should().Equal("ArrayValue1", "ArrayValue2");
         }
         
         [Test]
         public void Should_parse_Object_from_attributes()
         {
             var settings = XmlConfigurationParser.Parse("<object key1='val1' key2='val2' />");
-         
-            settings["Object"]["key1"].Value.Should().Be("val1");
-            settings["Object"]["key2"].Value.Should().Be("val2");
+
+            settings.Name.Should().Be("object");
+            settings["key1"].Value.Should().Be("val1");
+            settings["key2"].Value.Should().Be("val2");
         }
 
         [Test]
@@ -134,14 +144,17 @@ namespace Vostok.Configuration.Sources.Xml.Tests
 </object>";
 
             var settings = XmlConfigurationParser.Parse(value);
-            settings["Object"]["item"].Children.Select(child => child.Value).Should().Equal("value1", "value2");
-            settings["Object"]["attr"].Value.Should().Be("test");
+
+            settings.Name.Should().Be("object");
+            settings["item"].Children.Select(child => child.Value).Should().Equal("value1", "value2");
+            settings["attr"].Value.Should().Be("test");
         }
         
         [Test]
         public void Should_ignore_key_case()
         {
-            var settings = XmlConfigurationParser.Parse("<value>string</value>");
+            var settings = XmlConfigurationParser.Parse("<root><value>string</value></root>");
+
             settings["VALUE"].Value.Should().Be("string");
         }
 

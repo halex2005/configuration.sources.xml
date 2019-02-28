@@ -4,9 +4,9 @@ namespace Vostok.Configuration.Sources.Xml.Tests.Functional
 {
     internal static class TestCase
     {
-        public static readonly string Xml = "<key> <a>1</a> <a>2</a> <a>3</a> </key>";
+        public static readonly string Xml = "<root><key> <a>1</a> <a>2</a> <a>3</a> </key></root>";
 
-        public static readonly ISettingsNode SettingsTree = new ObjectNode(
+        public static readonly ISettingsNode SettingsTree = new ObjectNode("root",
             new[]
             {
                 new ObjectNode(

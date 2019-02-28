@@ -22,7 +22,7 @@ namespace Vostok.Configuration.Sources.Xml
             if (root == null)
                 return null;
 
-            return new ObjectNode(new List<ISettingsNode> { ParseElement(doc, root.Name, root) });
+            return ParseElement(doc, root.Name, root);
         }
 
         private static ISettingsNode ParseElement(XmlDocument doc, string name, XmlElement element)

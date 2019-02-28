@@ -13,7 +13,7 @@ namespace Vostok.Configuration.Sources.Xml.Tests.Functional
         {
             var source = new XmlStringSource(TestCase.Xml);
             source.Observe()
-                .WaitFirstValue(100.Milliseconds())
+                .WaitFirstValue(5.Seconds())
                 .Should()
                 .BeEquivalentTo((TestCase.SettingsTree, null as Exception));
         }
@@ -26,7 +26,7 @@ namespace Vostok.Configuration.Sources.Xml.Tests.Functional
             source.Push(TestCase.Xml);
 
             source.Observe()
-                .WaitFirstValue(100.Milliseconds())
+                .WaitFirstValue(5.Seconds())
                 .Should()
                 .BeEquivalentTo((TestCase.SettingsTree, null as Exception));
         }
