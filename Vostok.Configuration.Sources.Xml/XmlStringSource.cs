@@ -9,8 +9,13 @@ namespace Vostok.Configuration.Sources.Xml
     [PublicAPI]
     public class XmlStringSource : ManualFeedSource<string>
     {
-        public XmlStringSource(string xml)
+        public XmlStringSource()
             : base(XmlConfigurationParser.Parse)
+        {
+        }
+    
+        public XmlStringSource(string xml)
+            : this()
         {
             Push(xml);
         }
